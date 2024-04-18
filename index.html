@@ -1,30 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book diary</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Читательский дневник</title>
 </head>
 <body>
-    <h1>Мой читательский дневник</h1>
+<!-- корневой элемент, к которому будет подключён экземпляр Vue: -->   
+<div id="app">
+<h1>Читательский дневник</h1>
+<p>Введите данные о книге:</p>
+<!-- поля ввода данных об авторе, названии и описании, связанные с переменными во Vue -->   
+<input type="text" v-model="author" placeholder="Автор">
+<input type="text" v-model="title" placeholder="Название книги">
+<textarea v-model="description" placeholder="Описание книги"></textarea>
+<!-- кнопка для метода addBook --> 
+<button @click="addBook">Добавить книгу</button>
+<h2>Список книг:</h2>
+<ul>
+   <!-- директива v-for для вывода списка элементов на основе исходного массива --> 
+<li v-for="(book, index) in books" :key="index">
+<span>{{ book.time }} - {{ book.author }} - {{ book.title }} - {{ book.description }}</span>
+</li>
+</ul>
+<!-- длина списка --> 
+<p>Всего книг: {{ books.length }}</p>
+</div>
+<!-- Подключение библиотеки Vue.js -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<!-- создание нового экземпляра Vue и подключение к корневым элементам el автор, заголовок, описание и также добавление этих данных в localStorage -->
+<script>
+new Vue({
+    el: '#app',
+    data: {
+    author: '',
+    title: '',
+    description: '',
+    books: JSON.parse(localStorage.getItem('books')) || []
+    },
+    // создание объекта метод добавление книги
+    methods: {
+    addBook() {
+    let currentTime = new Date().toLocaleString();
+    this.books.push({
+    time: currentTime,
+    author: this.author,
+    title: this.title,
+    description: this.description
+    });
+    this.author = '';
+    this.title = '';
+    this.description = '';
     
-    <label for="titleInput">Введите название книги:</label>
-    <input type="text" id="titleInput">
-    
-    <label for="authorInput">Введите имя автора книги:</label>
-    <input type="text" id="authorInput">
-    
-    <label for="descriptionInput">Введите описание книги:</label>
-    <textarea id="descriptionInput"></textarea>
-
-    <button onclick="addBook()">Добавить книгу</button>
-
-    <ul id="bookList"></ul>
-
-
-    <script src="script.js"></script> 
+    localStorage.setItem('books', JSON.stringify(this.books));
+    }
+    }
+    });
+    </script>
 </body>
+<style>
+    body {color: #3e2d36;
+        background-color: rgb(247, 240, 255);
+    }
+    button {
+    border-top-right-radius: 90px;
+    border-bottom-left-radius: 80px;
+    background-color: rgb(212, 212, 255);
+    color: #6d5864; 
+    border: none; 
+    padding: 1rem 1.5rem; 
+    margin-bottom: 1rem;
+   }
+    </style>
 </html>
-
-    
